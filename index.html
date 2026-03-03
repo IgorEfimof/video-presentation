@@ -18,6 +18,7 @@
             font-family: Arial, sans-serif;
             background-color: #000;
             color: #fff;
+            overflow: hidden;
         }
 
         /* Стартовый экран с кнопкой */
@@ -69,11 +70,90 @@
             width: 100%;
             height: 100%;
             display: block;
-            object-fit: contain; /* contain - показывает целиком, cover - на весь экран с обрезкой */
+            object-fit: contain;
             background-color: black;
         }
 
-        /* Подсказка для выхода */
+        /* Контейнер для титров */
+        #credits-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: none;
+            z-index: 1500;
+            overflow: hidden;
+        }
+
+        /* Бегущие титры */
+        .scrolling-credits {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: scrollCredits 40s linear forwards;
+            animation-play-state: paused;
+        }
+
+        .credits-content {
+            width: 80%;
+            max-width: 800px;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 100vh; /* Начинаем снизу экрана */
+        }
+
+        .credits-title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            color: #667eea;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .feature-item {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .feature-desc {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        @keyframes scrollCredits {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-100%);
+            }
+        }
+
+        /* Подсказки */
         .hint {
             position: absolute;
             bottom: 20px;
@@ -83,8 +163,28 @@
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 14px;
-            z-index: 1001;
+            z-index: 2001;
             pointer-events: none;
+        }
+
+        .restart-hint {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(255,255,255,0.7);
+            background: rgba(0,0,0,0.5);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 2001;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: all 0.3s ease;
+        }
+
+        .restart-hint:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -96,20 +196,85 @@
 
     <!-- Контейнер с видео (изначально скрыт) -->
     <div id="video-container">
-        <video id="videoPlayer" controls playsinline>
+        <video id="videoPlayer" playsinline>
             <!-- Укажите правильный путь к вашему видео -->
-            <source src="video.MP4" type="video/MP4">
+            <source src="video.MP4" type="video/mp4">
             Ваш браузер не поддерживает тег video.
         </video>
-        <div class="hint">Нажмите ESC для выхода из полноэкранного режима</div>
+        <div class="hint">Нажмите ESC для выхода</div>
+    </div>
+
+    <!-- Контейнер с титрами -->
+    <div id="credits-container">
+        <div class="scrolling-credits" id="scrollingCredits">
+            <div class="credits-content">
+                <div class="credits-title">✨ Возможности программы ✨</div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">🚀</div>
+                    <div class="feature-name">Высокая производительность</div>
+                    <div class="feature-desc">Мгновенная обработка данных и быстрый доступ ко всем функциям программы</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🎨</div>
+                    <div class="feature-name">Интуитивный интерфейс</div>
+                    <div class="feature-desc">Удобный и понятный дизайн, разработанный с учетом потребностей пользователей</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🔒</div>
+                    <div class="feature-name">Безопасность данных</div>
+                    <div class="feature-desc">Многоуровневая защита и шифрование вашей информации</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-name">Аналитика в реальном времени</div>
+                    <div class="feature-desc">Детальные отчеты и графики для принятия важных решений</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🔄</div>
+                    <div class="feature-name">Интеграция с сервисами</div>
+                    <div class="feature-desc">Поддержка всех популярных платформ и API</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-name">Мобильная версия</div>
+                    <div class="feature-desc">Полная функциональность на всех устройствах</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-name">Автоматизация процессов</div>
+                    <div class="feature-desc">Сократите время на рутинные задачи</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🌐</div>
+                    <div class="feature-name">Облачное хранение</div>
+                    <div class="feature-desc">Доступ к данным из любой точки мира</div>
+                </div>
+
+                <div style="margin-top: 50px; color: #667eea; font-size: 20px;">
+                    Нажмите на экран для повторного просмотра
+                </div>
+            </div>
+        </div>
+        <div class="restart-hint" id="restartButton">↻ Смотреть заново</div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const startScreen = document.getElementById('start-screen');
             const videoContainer = document.getElementById('video-container');
+            const creditsContainer = document.getElementById('credits-container');
             const video = document.getElementById('videoPlayer');
             const startButton = document.getElementById('startButton');
+            const restartButton = document.getElementById('restartButton');
+            const scrollingCredits = document.getElementById('scrollingCredits');
 
             // Функция для открытия полноэкранного режима
             function openFullscreen(element) {
@@ -122,39 +287,135 @@
                 }
             }
 
-            // Обработчик клика по кнопке
-            startButton.addEventListener('click', function() {
-                // Скрываем стартовый экран
-                startScreen.style.display = 'none';
+            // Функция для закрытия полноэкранного режима
+            function closeFullscreen() {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+
+            // Функция для принудительного закрытия видео и показа титров
+            function forceShowCredits() {
+                console.log('Принудительно закрываем видео и показываем титры');
                 
-                // Показываем видео контейнер
+                // 1. Останавливаем видео
+                video.pause();
+                
+                // 2. Принудительно удаляем видео из DOM и добавляем обратно (жесткий сброс)
+                const videoParent = video.parentNode;
+                const videoClone = video.cloneNode(false); // Клонируем только тег, без источников
+                
+                // Сохраняем источник
+                const source = video.querySelector('source');
+                if (source) {
+                    videoClone.appendChild(source.cloneNode());
+                }
+                
+                // Заменяем видео на клон
+                videoParent.replaceChild(videoClone, video);
+                
+                // Обновляем ссылку на видео
+                const newVideo = document.getElementById('videoPlayer');
+                
+                // 3. Скрываем видео контейнер
+                videoContainer.style.display = 'none';
+                
+                // 4. Показываем контейнер с титрами
+                creditsContainer.style.display = 'block';
+                
+                // 5. Запускаем анимацию титров
+                scrollingCredits.style.animation = 'none';
+                scrollingCredits.offsetHeight; // Форсируем reflow
+                scrollingCredits.style.animation = 'scrollCredits 40s linear forwards';
+                scrollingCredits.style.animationPlayState = 'running';
+                
+                // 6. Выходим из полноэкранного режима
+                closeFullscreen();
+                
+                // 7. Обновляем ссылку на видео для будущих использований
+                // Но оставляем возможность перезапуска через рестарт
+            }
+
+            // Функция для показа титров (вызывается после окончания видео)
+            function showCredits() {
+                console.log('Видео закончилось, принудительно закрываем и показываем титры');
+                forceShowCredits();
+            }
+
+            // Функция для сброса всего и возврата на стартовый экран
+            function resetPresentation() {
+                console.log('Сброс презентации');
+                
+                // Скрываем все контейнеры
+                videoContainer.style.display = 'none';
+                creditsContainer.style.display = 'none';
+                
+                // Останавливаем анимацию титров
+                scrollingCredits.style.animationPlayState = 'paused';
+                
+                // Показываем стартовый экран
+                startScreen.style.display = 'flex';
+                
+                // Выходим из полноэкранного режима
+                closeFullscreen();
+            }
+
+            // Обработчик клика по кнопке старта
+            startButton.addEventListener('click', function() {
+                console.log('Запуск видео');
+                startScreen.style.display = 'none';
                 videoContainer.style.display = 'block';
                 
-                // Запускаем видео
+                // Перезагружаем видео (на случай если оно уже было использовано)
+                video.load();
+                
                 video.play()
                     .then(() => {
-                        console.log('Видео запущено со звуком');
-                        
-                        // Пытаемся открыть полноэкранный режим для видео
-                        // Небольшая задержка для уверенности, что видео начало играть
+                        console.log('Видео запущено');
                         setTimeout(() => {
                             openFullscreen(video);
                         }, 100);
                     })
                     .catch(error => {
                         console.error('Ошибка воспроизведения:', error);
-                        // Если не удалось запустить видео, показываем стартовый экран снова
                         alert('Не удалось запустить видео. Пожалуйста, проверьте файл video.mp4');
                         startScreen.style.display = 'flex';
                         videoContainer.style.display = 'none';
                     });
             });
 
-            // Если пользователь вышел из полноэкранного режима, можно предложить вернуться
-            document.addEventListener('fullscreenchange', function() {
-                if (!document.fullscreenElement && videoContainer.style.display === 'block') {
-                    console.log('Выход из полноэкранного режима');
+            // Обработчик окончания видео
+            video.addEventListener('ended', function() {
+                console.log('Событие ended - видео завершилось');
+                showCredits();
+            });
+
+            // Дополнительная проверка на окончание видео (таймаут)
+            video.addEventListener('timeupdate', function() {
+                // Если видео почти закончилось (осталось меньше 0.1 секунды)
+                if (video.duration - video.currentTime < 0.1 && video.duration > 0) {
+                    console.log('Видео на последних кадрах');
                 }
+            });
+
+            // Обработчик клика по кнопке рестарта
+            restartButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                console.log('Рестарт презентации');
+                resetPresentation();
+            });
+
+            // Клик по титрам для возврата (кроме кнопки рестарта)
+            creditsContainer.addEventListener('click', function(e) {
+                if (e.target === restartButton || restartButton.contains(e.target)) {
+                    return;
+                }
+                console.log('Клик по титрам - возврат на стартовый экран');
+                resetPresentation();
             });
 
             // Обработка ошибки видео
@@ -164,6 +425,36 @@
                 startScreen.style.display = 'flex';
                 videoContainer.style.display = 'none';
             });
+
+            // Обработка клавиши ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    if (videoContainer.style.display === 'block') {
+                        console.log('ESC нажат во время видео - показываем титры');
+                        showCredits();
+                    } else if (creditsContainer.style.display === 'block') {
+                        console.log('ESC нажат во время титров - возврат на старт');
+                        resetPresentation();
+                    }
+                }
+            });
+
+            // Отслеживаем попытки взаимодействия с видео после окончания
+            video.addEventListener('play', function() {
+                console.log('Видео запущено');
+            });
+
+            video.addEventListener('pause', function() {
+                console.log('Видео приостановлено');
+            });
+
+            // Принудительная проверка каждую секунду (запасной вариант)
+            setInterval(function() {
+                if (videoContainer.style.display === 'block' && video.ended) {
+                    console.log('Обнаружено завершение видео через интервал');
+                    showCredits();
+                }
+            }, 1000);
         });
     </script>
 </body>
