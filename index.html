@@ -87,7 +87,7 @@
             overflow: hidden;
         }
 
-        /* Бегущие титры — скорость увеличена в 2 раза (20 секунд) */
+        /* Бегущие титры — скорость 20 секунд */
         .scrolling-credits {
             position: absolute;
             width: 100%;
@@ -247,15 +247,7 @@
                 <div class="feature-item">
                     <div class="feature-icon">🎨</div>
                     <div class="feature-name">Интуитивный интерфейс</div>
-                    <div class="feature-desc">✔️ Веб-приложение на HTML/CSS/JS (адаптивное, под iPhone/iPad)</div>
-<div class="feature-desc">✔️ ML-модель LSTM, обученная на истории розыгрышей</div>
-<div class="feature-desc">✔️ 6 методов генерации чисел (холодные, горячие, равномерный и др.)</div>
-<div class="feature-desc">✔️ Уникальный "Вариатор ставок" (анализ горячих фаз)</div>
-<div class="feature-desc">✔️ Тепловая карта совместных выпадений</div>
-<div class="feature-desc">✔️ Графики прогнозов, статистика выигрышей</div>
-<div class="feature-desc">✔️ Темная тема, кастомная клавиатура, анимации</div>
-<div class="feature-desc">✔️ Сохранение данных в браузере</div>
-<div class="feature-desc">Технически: полностью готовый index.html с JS и стилями.</div>
+                    <div class="feature-desc">Удобный и понятный дизайн, разработанный с учетом потребностей пользователей</div>
                 </div>
 
                 <div class="feature-item">
@@ -314,7 +306,6 @@
             const afterCreditsMessage = document.getElementById('afterCreditsMessage');
 
             let animationEndHandler = null;
-            let videoEnded = false; // Флаг, чтобы избежать двойного срабатывания
 
             // Функция для открытия полноэкранного режима
             function openFullscreen(element) {
@@ -351,16 +342,12 @@
 
             // Показ титров с автоматическим закрытием плеера
             function showCredits() {
-                // Предотвращаем повторный вызов
-                if (videoEnded) return;
-                videoEnded = true;
-                
-                console.log('Видео закончилось — автоматически закрываем плеер и запускаем титры');
+                console.log('Показываем титры и закрываем плеер');
                 
                 // 1. Останавливаем видео
                 video.pause();
                 
-                // 2. Скрываем видео контейнер (АВТОМАТИЧЕСКОЕ ЗАКРЫТИЕ ПЛЕЕРА)
+                // 2. Принудительно скрываем видео контейнер (АВТОМАТИЧЕСКОЕ ЗАКРЫТИЕ ПЛЕЕРА)
                 videoContainer.style.display = 'none';
                 
                 // 3. Выходим из полноэкранного режима
@@ -371,8 +358,12 @@
                 
                 // 5. Сбрасываем анимацию и запускаем заново
                 resetCreditsAnimation();
-                scrollingCredits.style.animation = 'scrollCredits 20s linear forwards';
-                scrollingCredits.style.animationPlayState = 'running';
+                
+                // Небольшая задержка для гарантии, что DOM обновился
+                setTimeout(() => {
+                    scrollingCredits.style.animation = 'scrollCredits 20s linear forwards';
+                    scrollingCredits.style.animationPlayState = 'running';
+                }, 50);
 
                 // 6. Обработчик окончания анимации
                 animationEndHandler = function() {
@@ -385,9 +376,6 @@
             // Полный сброс презентации к стартовому экрану
             function resetPresentation() {
                 console.log('Возврат на стартовый экран');
-                
-                // Сбрасываем флаг
-                videoEnded = false;
                 
                 videoContainer.style.display = 'none';
                 creditsContainer.style.display = 'none';
@@ -406,16 +394,17 @@
             startButton.addEventListener('click', function() {
                 console.log('Запуск видео');
                 
-                // Сбрасываем флаг при новом запуске
-                videoEnded = false;
-                
                 startScreen.style.display = 'none';
                 videoContainer.style.display = 'block';
                 
-                // Скрываем титры на всякий случай
+                // Скрываем титры
                 creditsContainer.style.display = 'none';
                 resetCreditsAnimation();
 
+                // Принудительно перезагружаем видео
+                video.load();
+                
+                // Запускаем воспроизведение
                 video.play()
                     .then(() => {
                         console.log('Видео воспроизводится');
@@ -434,22 +423,35 @@
             // Основное событие окончания видео
             video.addEventListener('ended', function() {
                 console.log('Событие ended — видео закончилось');
-                showCredits(); // плеер закроется автоматически внутри функции
+                showCredits();
             });
 
-            // Дополнительная проверка на окончание видео через timeupdate
-            // Это самый надежный способ поймать конец видео
+            // Множественные проверки окончания видео для надежности
+            let checkInterval = setInterval(function() {
+                if (videoContainer.style.display === 'block' && video.ended) {
+                    console.log('Обнаружен конец видео через интервал');
+                    showCredits();
+                }
+            }, 100);
+
+            // Проверка через timeupdate (самый надежный способ)
             video.addEventListener('timeupdate', function() {
-                // Если видео почти закончилось (осталось меньше 0.1 секунды) и еще не было флага окончания
-                if (video.duration - video.currentTime < 0.1 && video.duration > 0 && !videoEnded) {
-                    console.log('Видео на последних кадрах, готовимся к закрытию');
-                    // Даем небольшую задержку, чтобы точно достичь конца
+                // Если видео почти закончилось (осталось меньше 0.2 секунды)
+                if (video.duration && (video.duration - video.currentTime < 0.2)) {
+                    console.log('Видео приближается к концу');
+                    // Проверяем через небольшую задержку, действительно ли оно закончилось
                     setTimeout(() => {
-                        if (!videoEnded && video.ended) {
+                        if (video.ended) {
+                            console.log('Подтвержден конец видео через timeupdate');
                             showCredits();
                         }
-                    }, 150);
+                    }, 300);
                 }
+            });
+
+            // Обработчик ожидания (если видео загружено, но не играет)
+            video.addEventListener('waiting', function() {
+                console.log('Видео ожидает буферизации');
             });
 
             // Кнопка "Смотреть заново" в титрах
@@ -479,9 +481,9 @@
             // Глобальная клавиша ESC
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
-                    if (videoContainer.style.display === 'block' && !videoEnded) {
-                        console.log('ESC во время видео — принудительный показ титров');
-                        showCredits(); // тоже закрывает плеер
+                    if (videoContainer.style.display === 'block') {
+                        console.log('ESC во время видео — показ титров');
+                        showCredits();
                     } else if (creditsContainer.style.display === 'block') {
                         console.log('ESC во время титров — возврат');
                         resetPresentation();
@@ -489,19 +491,15 @@
                 }
             });
 
-            // Логирование состояний
-            video.addEventListener('pause', () => console.log('Видео на паузе'));
+            // Логирование состояний видео
             video.addEventListener('play', () => console.log('Видео играет'));
-            
-            // Дополнительно: следим за изменением display видео контейнера
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.attributeName === 'style') {
-                        console.log('videoContainer style изменен, display:', videoContainer.style.display);
-                    }
-                });
+            video.addEventListener('pause', () => console.log('Видео на паузе'));
+            video.addEventListener('volumechange', () => console.log('Громкость изменена'));
+
+            // Очистка интервала при выгрузке страницы (хорошая практика)
+            window.addEventListener('beforeunload', function() {
+                clearInterval(checkInterval);
             });
-            observer.observe(videoContainer, { attributes: true });
         });
     </script>
 </body>
