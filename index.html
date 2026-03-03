@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Презентация программы</title>
+    <style>
+        /* Убираем все отступы */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+        }
+
+        /* Стартовый экран с кнопкой */
+        #start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 2000;
+        }
+
+        .start-button {
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+            border: 3px solid #fff;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(255,255,255,0.3);
+        }
+
+        .start-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+            box-shadow: 0 0 50px rgba(255,255,255,0.5);
+        }
+
+        /* Видео плеер (изначально скрыт) */
+        #video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: none;
+            z-index: 1000;
+        }
+
+        #videoPlayer {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain; /* contain - показывает целиком, cover - на весь экран с обрезкой */
+            background-color: black;
+        }
+
+        /* Подсказка для выхода */
+        .hint {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: rgba(255,255,255,0.7);
+            background: rgba(0,0,0,0.5);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1001;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Стартовый экран с кнопкой -->
+    <div id="start-screen">
+        <button class="start-button" id="startButton">▶ Смотреть презентацию</button>
+    </div>
+
+    <!-- Контейнер с видео (изначально скрыт) -->
+    <div id="video-container">
+        <video id="videoPlayer" controls playsinline>
+            <!-- Укажите правильный путь к вашему видео -->
+            <source src="video.mp4" type="video/mp4">
+            Ваш браузер не поддерживает тег video.
+        </video>
+        <div class="hint">Нажмите ESC для выхода из полноэкранного режима</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startScreen = document.getElementById('start-screen');
+            const videoContainer = document.getElementById('video-container');
+            const video = document.getElementById('videoPlayer');
+            const startButton = document.getElementById('startButton');
+
+            // Функция для открытия полноэкранного режима
+            function openFullscreen(element) {
+                if (element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if (element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if (element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+            }
+
+            // Обработчик клика по кнопке
+            startButton.addEventListener('click', function() {
+                // Скрываем стартовый экран
+                startScreen.style.display = 'none';
+                
+                // Показываем видео контейнер
+                videoContainer.style.display = 'block';
+                
+                // Запускаем видео
+                video.play()
+                    .then(() => {
+                        console.log('Видео запущено со звуком');
+                        
+                        // Пытаемся открыть полноэкранный режим для видео
+                        // Небольшая задержка для уверенности, что видео начало играть
+                        setTimeout(() => {
+                            openFullscreen(video);
+                        }, 100);
+                    })
+                    .catch(error => {
+                        console.error('Ошибка воспроизведения:', error);
+                        // Если не удалось запустить видео, показываем стартовый экран снова
+                        alert('Не удалось запустить видео. Пожалуйста, проверьте файл video.mp4');
+                        startScreen.style.display = 'flex';
+                        videoContainer.style.display = 'none';
+                    });
+            });
+
+            // Если пользователь вышел из полноэкранного режима, можно предложить вернуться
+            document.addEventListener('fullscreenchange', function() {
+                if (!document.fullscreenElement && videoContainer.style.display === 'block') {
+                    console.log('Выход из полноэкранного режима');
+                }
+            });
+
+            // Обработка ошибки видео
+            video.addEventListener('error', function(e) {
+                console.error('Ошибка загрузки видео:', e);
+                alert('Ошибка загрузки видео. Проверьте, что файл video.mp4 существует и доступен.');
+                startScreen.style.display = 'flex';
+                videoContainer.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
