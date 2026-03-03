@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Презентация программы – исправлено</title>
+    <title>Презентация программы – авто закрытие плеера</title>
     <style>
         /* Убираем все отступы */
         * {
@@ -85,10 +85,9 @@
             display: none;
             z-index: 1500;
             overflow: hidden;
-            /* больше никакого белого фона — всегда чёрный */
         }
 
-        /* Бегущие титры — скорость увеличена в 2 раза (было 40s, стало 20s) */
+        /* Бегущие титры — скорость увеличена в 2 раза (20 секунд) */
         .scrolling-credits {
             position: absolute;
             width: 100%;
@@ -97,8 +96,7 @@
             flex-direction: column;
             align-items: center;
             animation: scrollCredits 20s linear forwards;
-            animation-play-state: paused; /* изначально пауза, запускаем JS */
-            /* убираем белый всплеск: просто остановка в конце */
+            animation-play-state: paused;
         }
 
         .credits-content {
@@ -146,7 +144,7 @@
             margin-bottom: 10px;
         }
 
-        /* Элемент, который появляется после окончания анимации титров (без вспышки) */
+        /* Сообщение после окончания прокрутки титров */
         .after-credits-message {
             position: absolute;
             bottom: 80px;
@@ -287,11 +285,9 @@
                     <div class="feature-name">Облачное хранение</div>
                     <div class="feature-desc">Доступ к данным из любой точки мира</div>
                 </div>
-
-                <!-- Убрали надпись про нажатие, она дублируется, оставим элегантное завершение -->
             </div>
         </div>
-        <!-- Сообщение после окончания прокрутки (без белого экрана) -->
+        <!-- Сообщение после окончания прокрутки -->
         <div class="after-credits-message" id="afterCreditsMessage">
             <span>Нажмите на экран или ESC для возврата</span>
         </div>
@@ -309,7 +305,7 @@
             const scrollingCredits = document.getElementById('scrollingCredits');
             const afterCreditsMessage = document.getElementById('afterCreditsMessage');
 
-            let animationEndHandler = null; // для обработчика окончания анимации
+            let animationEndHandler = null;
 
             // Функция для открытия полноэкранного режима
             function openFullscreen(element) {
@@ -333,156 +329,139 @@
                 }
             }
 
-            // Останавливаем анимацию и подчищаем обработчики
+            // Сброс анимации титров
             function resetCreditsAnimation() {
-                // Убираем обработчик окончания анимации, если он был
                 if (animationEndHandler) {
                     scrollingCredits.removeEventListener('animationend', animationEndHandler);
                     animationEndHandler = null;
                 }
-                // Скрываем сообщение
                 afterCreditsMessage.classList.remove('show');
-                // Сбрасываем анимацию
                 scrollingCredits.style.animation = 'none';
-                scrollingCredits.offsetHeight; // reflow
+                scrollingCredits.offsetHeight; // форсированный reflow
             }
 
-            // Показываем титры сразу, без паузы, с ускоренной анимацией
+            // Показ титров с автоматическим закрытием плеера
             function showCredits() {
-                console.log('Показываем титры (быстрый старт)');
+                console.log('Завершение видео — автоматически закрываем плеер и запускаем титры');
                 
-                // Скрываем видео контейнер
+                // 1. Скрываем видео контейнер (автоматическое закрытие плеера)
                 videoContainer.style.display = 'none';
                 
-                // Показываем контейнер с титрами
+                // 2. Выходим из полноэкранного режима, если активен
+                closeFullscreen();
+                
+                // 3. Показываем контейнер с титрами
                 creditsContainer.style.display = 'block';
                 
-                // Полностью сбрасываем анимацию, чтобы начать с чистого листа
+                // 4. Сбрасываем анимацию и запускаем заново
                 resetCreditsAnimation();
-
-                // Запускаем анимацию заново (20 секунд)
                 scrollingCredits.style.animation = 'scrollCredits 20s linear forwards';
                 scrollingCredits.style.animationPlayState = 'running';
 
-                // Устанавливаем обработчик на окончание прокрутки (без белого экрана)
+                // 5. Обработчик окончания анимации
                 animationEndHandler = function() {
-                    console.log('Анимация титров завершилась — показываем приглашение');
-                    // Никакого белого фона! Проявляем текст с подсказкой
+                    console.log('Анимация титров завершена');
                     afterCreditsMessage.classList.add('show');
-                    // Можно также оставить кнопку рестарт видимой — она и так видна
                 };
                 scrollingCredits.addEventListener('animationend', animationEndHandler);
             }
 
-            // Функция для сброса всего и возврата на стартовый экран
+            // Полный сброс презентации к стартовому экрану
             function resetPresentation() {
-                console.log('Сброс презентации');
+                console.log('Возврат на стартовый экран');
                 
-                // Скрываем все контейнеры
                 videoContainer.style.display = 'none';
                 creditsContainer.style.display = 'none';
                 
-                // Сбрасываем анимацию титров и скрываем сообщение
                 resetCreditsAnimation();
                 
-                // Показываем стартовый экран
                 startScreen.style.display = 'flex';
                 
-                // Выходим из полноэкранного режима
                 closeFullscreen();
                 
-                // Перезагружаем видео, чтобы при следующем запуске оно было с начала
+                // Перезагружаем видео для следующего просмотра
                 video.load();
             }
 
-            // Обработчик клика по кнопке старта
+            // Запуск видео по кнопке
             startButton.addEventListener('click', function() {
                 console.log('Запуск видео');
                 startScreen.style.display = 'none';
                 videoContainer.style.display = 'block';
                 
-                // Убедимся, что титры скрыты и анимация сброшена
+                // Скрываем титры на всякий случай
                 creditsContainer.style.display = 'none';
                 resetCreditsAnimation();
 
-                // Пытаемся воспроизвести видео
                 video.play()
                     .then(() => {
-                        console.log('Видео запущено');
+                        console.log('Видео воспроизводится');
                         setTimeout(() => {
                             openFullscreen(video);
                         }, 100);
                     })
                     .catch(error => {
                         console.error('Ошибка воспроизведения:', error);
-                        alert('Не удалось запустить видео. Пожалуйста, проверьте файл video.mp4');
+                        alert('Не удалось запустить видео. Проверьте файл video.mp4');
                         startScreen.style.display = 'flex';
                         videoContainer.style.display = 'none';
                     });
             });
 
-            // Обработчик окончания видео (событие ended)
+            // Основное событие окончания видео
             video.addEventListener('ended', function() {
-                console.log('Событие ended — видео завершилось, сразу титры');
-                showCredits(); // без задержки
+                console.log('Событие ended — видео закончилось');
+                showCredits(); // плеер закроется автоматически внутри функции
             });
 
-            // Дополнительный запасной вариант: интервал каждые 0.5 сек проверяем окончание
-            // Это полезно, если событие ended не сработало по какой-то причине
+            // Запасной интервал для надежности (проверка каждые 0.3 сек)
             setInterval(function() {
                 if (videoContainer.style.display === 'block' && video.ended) {
-                    console.log('Обнаружено завершение видео через интервал');
+                    console.log('Обнаружен конец видео через интервал');
                     showCredits();
                 }
-            }, 500);
+            }, 300);
 
-            // Обработчик клика по кнопке рестарта
+            // Кнопка "Смотреть заново" в титрах
             restartButton.addEventListener('click', function(e) {
                 e.stopPropagation();
-                console.log('Рестарт презентации');
+                console.log('Рестарт по кнопке');
                 resetPresentation();
             });
 
-            // Клик по титрам (или по фону) для возврата на старт, кроме кнопки рестарт
+            // Клик по области титров (возврат на старт, кроме кнопки рестарт)
             creditsContainer.addEventListener('click', function(e) {
-                // Если клик именно на кнопку рестарт или внутри неё — игнорируем, кнопка сама сработает
                 if (e.target === restartButton || restartButton.contains(e.target)) {
                     return;
                 }
-                // Иначе возврат на стартовый экран
-                console.log('Клик по титрам — возврат на стартовый экран');
+                console.log('Клик по титрам — возврат');
                 resetPresentation();
             });
 
-            // Обработка ошибки видео
+            // Обработка ошибок видео
             video.addEventListener('error', function(e) {
-                console.error('Ошибка загрузки видео:', e);
-                alert('Ошибка загрузки видео. Проверьте, что файл video.mp4 существует и доступен.');
+                console.error('Ошибка видео:', e);
+                alert('Ошибка загрузки видео. Убедитесь, что файл video.mp4 существует.');
                 startScreen.style.display = 'flex';
                 videoContainer.style.display = 'none';
             });
 
-            // Обработка клавиши ESC
+            // Глобальная клавиша ESC
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     if (videoContainer.style.display === 'block') {
-                        console.log('ESC нажат во время видео — показываем титры');
-                        showCredits(); // сразу титры (ранний выход)
+                        console.log('ESC во время видео — принудительный показ титров');
+                        showCredits(); // тоже закрывает плеер
                     } else if (creditsContainer.style.display === 'block') {
-                        console.log('ESC нажат во время титров — возврат на старт');
+                        console.log('ESC во время титров — возврат');
                         resetPresentation();
-                    } else if (startScreen.style.display === 'flex') {
-                        // На стартовом экране ESC не делает ничего (можно игнорировать)
                     }
                 }
             });
 
-            // Отслеживаем попытки взаимодействия с видео (просто логи)
-            video.addEventListener('play', () => console.log('Видео запущено'));
-            video.addEventListener('pause', () => console.log('Видео приостановлено'));
-
-            // Дополнительно: если по какой-то причине видео было перемотано в конец (через timeupdate)
-            // но это уже закроет интервал, оставим как есть.
+            // Дополнительно: при паузе не делаем ничего, просто логи
+            video.addEventListener('pause', () => console.log('Видео на паузе'));
+            video.addEventListener('play', () => console.log('Видео играет'));
         });
     </script>
 </body>
