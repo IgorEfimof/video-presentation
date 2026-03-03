@@ -306,6 +306,7 @@
             const afterCreditsMessage = document.getElementById('afterCreditsMessage');
 
             let animationEndHandler = null;
+            let videoEnded = false; // Флаг, чтобы избежать двойного срабатывания
 
             // Функция для открытия полноэкранного режима
             function openFullscreen(element) {
@@ -342,23 +343,30 @@
 
             // Показ титров с автоматическим закрытием плеера
             function showCredits() {
-                console.log('Завершение видео — автоматически закрываем плеер и запускаем титры');
+                // Предотвращаем повторный вызов
+                if (videoEnded) return;
+                videoEnded = true;
                 
-                // 1. Скрываем видео контейнер (автоматическое закрытие плеера)
+                console.log('Видео закончилось — автоматически закрываем плеер и запускаем титры');
+                
+                // 1. Останавливаем видео
+                video.pause();
+                
+                // 2. Скрываем видео контейнер (АВТОМАТИЧЕСКОЕ ЗАКРЫТИЕ ПЛЕЕРА)
                 videoContainer.style.display = 'none';
                 
-                // 2. Выходим из полноэкранного режима, если активен
+                // 3. Выходим из полноэкранного режима
                 closeFullscreen();
                 
-                // 3. Показываем контейнер с титрами
+                // 4. Показываем контейнер с титрами
                 creditsContainer.style.display = 'block';
                 
-                // 4. Сбрасываем анимацию и запускаем заново
+                // 5. Сбрасываем анимацию и запускаем заново
                 resetCreditsAnimation();
                 scrollingCredits.style.animation = 'scrollCredits 20s linear forwards';
                 scrollingCredits.style.animationPlayState = 'running';
 
-                // 5. Обработчик окончания анимации
+                // 6. Обработчик окончания анимации
                 animationEndHandler = function() {
                     console.log('Анимация титров завершена');
                     afterCreditsMessage.classList.add('show');
@@ -369,6 +377,9 @@
             // Полный сброс презентации к стартовому экрану
             function resetPresentation() {
                 console.log('Возврат на стартовый экран');
+                
+                // Сбрасываем флаг
+                videoEnded = false;
                 
                 videoContainer.style.display = 'none';
                 creditsContainer.style.display = 'none';
@@ -386,6 +397,10 @@
             // Запуск видео по кнопке
             startButton.addEventListener('click', function() {
                 console.log('Запуск видео');
+                
+                // Сбрасываем флаг при новом запуске
+                videoEnded = false;
+                
                 startScreen.style.display = 'none';
                 videoContainer.style.display = 'block';
                 
@@ -414,13 +429,20 @@
                 showCredits(); // плеер закроется автоматически внутри функции
             });
 
-            // Запасной интервал для надежности (проверка каждые 0.3 сек)
-            setInterval(function() {
-                if (videoContainer.style.display === 'block' && video.ended) {
-                    console.log('Обнаружен конец видео через интервал');
-                    showCredits();
+            // Дополнительная проверка на окончание видео через timeupdate
+            // Это самый надежный способ поймать конец видео
+            video.addEventListener('timeupdate', function() {
+                // Если видео почти закончилось (осталось меньше 0.1 секунды) и еще не было флага окончания
+                if (video.duration - video.currentTime < 0.1 && video.duration > 0 && !videoEnded) {
+                    console.log('Видео на последних кадрах, готовимся к закрытию');
+                    // Даем небольшую задержку, чтобы точно достичь конца
+                    setTimeout(() => {
+                        if (!videoEnded && video.ended) {
+                            showCredits();
+                        }
+                    }, 150);
                 }
-            }, 300);
+            });
 
             // Кнопка "Смотреть заново" в титрах
             restartButton.addEventListener('click', function(e) {
@@ -449,7 +471,7 @@
             // Глобальная клавиша ESC
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
-                    if (videoContainer.style.display === 'block') {
+                    if (videoContainer.style.display === 'block' && !videoEnded) {
                         console.log('ESC во время видео — принудительный показ титров');
                         showCredits(); // тоже закрывает плеер
                     } else if (creditsContainer.style.display === 'block') {
@@ -459,9 +481,19 @@
                 }
             });
 
-            // Дополнительно: при паузе не делаем ничего, просто логи
+            // Логирование состояний
             video.addEventListener('pause', () => console.log('Видео на паузе'));
             video.addEventListener('play', () => console.log('Видео играет'));
+            
+            // Дополнительно: следим за изменением display видео контейнера
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.attributeName === 'style') {
+                        console.log('videoContainer style изменен, display:', videoContainer.style.display);
+                    }
+                });
+            });
+            observer.observe(videoContainer, { attributes: true });
         });
     </script>
 </body>
