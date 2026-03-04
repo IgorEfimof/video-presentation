@@ -2,183 +2,208 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Презентация Программы | Ефимов Игорь 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Презентация Программы | ML Анализатор Лотерей</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Roboto, system-ui, sans-serif;
         }
 
         body {
-            background: radial-gradient(circle at 20% 30%, #1a1f35, #0a0c1a);
+            background: radial-gradient(ellipse at 30% 40%, #1a1f3a, #0b0e1a);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem 1.5rem;
+            padding: 1.5rem 1rem;
         }
 
-        /* Главный контейнер */
-        .presentation-container {
+        .app-container {
             max-width: 1300px;
             width: 100%;
             margin: 0 auto;
         }
 
         /* Заголовок презентации */
-        .presentation-header {
+        .title-block {
             text-align: center;
             margin-bottom: 2.5rem;
         }
 
-        .presentation-header h1 {
-            font-size: 3.8rem;
+        .title-block h1 {
+            font-size: clamp(2.2rem, 8vw, 4.2rem);
             font-weight: 800;
-            background: linear-gradient(145deg, #ffd6a5, #ff9f7c, #c0b9ff);
+            background: linear-gradient(135deg, #ffe5b4, #ffb3c6, #b1c5ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 40px rgba(192, 185, 255, 0.5);
             letter-spacing: -0.02em;
+            text-shadow: 0 10px 30px rgba(255, 200, 150, 0.3);
         }
 
-        .presentation-header .sub {
-            color: #9aa4bf;
+        .title-block .sub {
+            color: #9eb0d9;
             font-size: 1.3rem;
-            margin-top: 0.5rem;
-            border-bottom: 2px solid #2d3a5e;
+            border-bottom: 2px solid #2d4060;
             display: inline-block;
             padding-bottom: 0.5rem;
-            backdrop-filter: blur(5px);
         }
 
-        /* Основной блок плеера */
-        .player-card {
-            background: rgba(18, 22, 45, 0.7);
+        /* Основной плеер */
+        .player-panel {
+            background: rgba(18, 25, 45, 0.6);
             backdrop-filter: blur(25px);
             border-radius: 3rem;
             padding: 2rem;
-            box-shadow: 0 30px 60px -20px #000000cc, inset 0 1px 2px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 30px 60px -20px black, inset 0 1px 2px rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
 
-        /* Видео контейнер */
-        .video-box {
+        /* Видео бокс */
+        .video-wrapper {
             position: relative;
             width: 100%;
-            border-radius: 2.2rem;
+            border-radius: 2.5rem;
             overflow: hidden;
-            background: #05070f;
+            background: #03050c;
             aspect-ratio: 16 / 9;
-            box-shadow: 0 25px 45px -12px black;
-            border: 1px solid rgba(255, 215, 170, 0.2);
+            box-shadow: 0 25px 50px -10px #000;
+            border: 1px solid #4f6390;
         }
 
-        #presentationVideo {
+        #programVideo {
             width: 100%;
             height: 100%;
             display: block;
             object-fit: cover;
-            cursor: pointer;
         }
 
-        /* Титры (концовка презентации) */
-        .end-credits {
+        /* Оверлей с бегущей строкой (титры о возможностях) */
+        .feature-credits {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(5, 8, 20, 0.92);
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(12px);
             color: white;
-            text-align: center;
             z-index: 30;
-            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 1s ease, visibility 1s;
-            border-radius: 2.2rem;
+            transition: opacity 0.6s ease, visibility 0.6s;
+            border-radius: 2.5rem;
+            padding: 1rem;
         }
 
-        .end-credits.show {
+        .feature-credits.show {
             opacity: 1;
             visibility: visible;
         }
 
-        .credits-inner {
-            max-width: 850px;
-            transform: translateY(25px);
-            animation: creditRise 1.4s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+        /* Контейнер бегущей строки (кинематографичный эффект) */
+        .scrolling-wrapper {
+            width: 100%;
+            max-width: 900px;
+            height: 100%;
+            max-height: 500px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
         }
 
-        @keyframes creditRise {
-            0% { transform: translateY(40px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
+        .scrolling-text {
+            animation: scrollUp 30s linear infinite;
+            color: #fff;
+            text-align: center;
+            width: 100%;
+            padding: 1rem 2rem;
         }
 
-        .program-name {
-            font-size: 4rem;
+        @keyframes scrollUp {
+            0% { transform: translateY(70%); }
+            100% { transform: translateY(-70%); }
+        }
+
+        /* Стили для контента внутри бегущей строки */
+        .feature-title {
+            font-size: 2.8rem;
             font-weight: 800;
-            background: linear-gradient(145deg, #fbc7b9, #d7a9f0, #a9d6f0);
+            background: linear-gradient(145deg, #fcd9b8, #cbb2ff, #a4d0ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 1.2rem;
-            line-height: 1.2;
-        }
-
-        .presentation-label {
-            font-size: 2rem;
-            color: #bbc4db;
-            font-weight: 300;
-            letter-spacing: 4px;
             margin-bottom: 2rem;
-            text-transform: uppercase;
         }
 
-        .developer {
-            font-size: 3.2rem;
-            font-weight: 700;
-            color: #f8f0e0;
-            margin: 1.8rem 0 1rem;
-            text-shadow: 0 0 30px #b7a4ff;
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            font-size: 1.6rem;
+            line-height: 2.4rem;
         }
 
-        .year-badge {
-            font-size: 2.5rem;
-            background: linear-gradient(145deg, #5750a0, #302b60);
-            display: inline-block;
-            padding: 0.5rem 2.5rem;
-            border-radius: 60px;
-            color: white;
-            font-weight: 600;
-            margin: 1.2rem 0;
-            box-shadow: 0 10px 25px #00000055;
-            border: 1px solid #a38dff;
-        }
-
-        .thanks-message {
-            font-size: 1.5rem;
-            color: #ced6f0;
+        .feature-list li {
+            margin: 1.8rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
             background: rgba(255, 255, 255, 0.03);
-            padding: 1rem 2.2rem;
+            padding: 0.8rem 1.8rem;
             border-radius: 60px;
-            display: inline-block;
-            border: 1px dashed #6e7eb3;
-            margin-top: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .feature-list li span {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 8px #a97aff);
+        }
+
+        .tech-badge {
+            margin-top: 2.5rem;
+            font-size: 1.4rem;
+            color: #b3c7ff;
+            background: rgba(15, 30, 60, 0.7);
+            padding: 1rem 2.2rem;
+            border-radius: 50px;
+            border: 1px solid #6a4e9e;
+        }
+
+        .close-hint {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            color: rgba(255,255,255,0.5);
+            font-size: 1rem;
+            background: #111a2b;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            border: 1px solid #6c7fb0;
+            cursor: pointer;
+            transition: 0.2s;
+            z-index: 40;
+        }
+
+        .close-hint:hover {
+            background: #2f4070;
+            color: white;
         }
 
         /* Кнопки управления */
-        .action-bar {
+        .button-bar {
             display: flex;
             gap: 1.2rem;
             margin-top: 2.2rem;
@@ -186,173 +211,169 @@
             justify-content: center;
         }
 
-        .action-btn {
-            background: rgba(30, 38, 70, 0.8);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 0.9rem 2.3rem;
+        .btn {
+            background: rgba(30, 40, 65, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid #43557a;
+            padding: 1rem 2.5rem;
             border-radius: 3rem;
             font-size: 1.1rem;
             font-weight: 600;
-            color: #e2e8f0;
+            color: #eef3ff;
             cursor: pointer;
             transition: 0.3s;
-            box-shadow: 0 8px 20px -8px #000000;
-            letter-spacing: 0.3px;
+            box-shadow: 0 8px 20px -6px #00000080;
         }
 
-        .action-btn.highlight {
-            background: linear-gradient(125deg, #5f5fcf, #ab62c7);
+        .btn-primary {
+            background: linear-gradient(145deg, #6b5ddb, #aa64c7);
             border: none;
-            color: white;
-            box-shadow: 0 10px 25px -5px #9f7aea;
+            box-shadow: 0 10px 25px -5px #b585f0;
         }
 
-        .action-btn.highlight:hover {
-            transform: scale(1.06);
+        .btn-primary:hover {
+            transform: scale(1.05);
             filter: brightness(1.15);
         }
 
-        .action-btn.secondary:hover {
-            background: #2e3b5e;
-            border-color: #a98edb;
+        .btn-outline:hover {
+            background: #31486e;
+            border-color: #a98ef0;
         }
 
-        /* ФУТЕР с защитой (2026, Ефимов Игорь) */
-        .legal-footer {
+        /* ФУТЕР с защитой */
+        .protected-footer {
             background: rgba(8, 12, 28, 0.9);
             backdrop-filter: blur(15px);
             border-radius: 2.5rem;
             padding: 2.5rem 2rem;
-            text-align: center;
-            border: 1px solid rgba(190, 170, 250, 0.15);
+            border: 1px solid #5a4d8c;
             margin-top: 2rem;
-            box-shadow: 0 15px 40px -20px #000;
+            text-align: center;
         }
 
-        .footer-main {
+        .footer-inner {
             max-width: 800px;
             margin: 0 auto;
         }
 
-        .copyright-year {
+        .dev-info {
             font-size: 1.3rem;
-            color: #a6b3d1;
-            margin-bottom: 1rem;
+            color: #b1c2e6;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.8rem;
+            gap: 1rem;
             flex-wrap: wrap;
         }
 
-        .copyright-year .year {
-            background: #1f2a48;
+        .dev-info .year {
+            background: #262f50;
             padding: 0.3rem 1.5rem;
-            border-radius: 40px;
-            color: #f0eaff;
+            border-radius: 50px;
+            color: #fff;
             font-weight: 700;
-            border: 1px solid #6173aa;
+            border: 1px solid #8895cf;
         }
 
-        .developer-name {
+        .dev-name {
             font-size: 2rem;
             font-weight: 800;
-            background: linear-gradient(145deg, #b7a9ff, #97b4ff);
+            background: linear-gradient(145deg, #dcc9ff, #9dc6ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin: 0.5rem 0 0.8rem;
+            margin: 0.5rem 0;
         }
 
-        .copyright-text {
-            font-size: 1.2rem;
-            color: #bdc4dc;
-            margin: 1rem 0;
-        }
-
-        .protection-warning {
-            background: rgba(160, 60, 60, 0.2);
-            border: 1px solid #ff7a7a;
-            color: #ffbaba;
+        .copy-warning {
+            background: rgba(140, 50, 50, 0.25);
+            border: 1px solid #ff8a8a;
+            color: #ffc9c9;
             padding: 1rem 2rem;
-            border-radius: 60px;
+            border-radius: 50px;
             display: inline-block;
-            font-weight: 600;
             margin: 1rem 0;
-            backdrop-filter: blur(4px);
+            font-weight: 600;
         }
 
-        .legal-note {
+        .legal-text {
+            color: #6e80aa;
             font-size: 0.95rem;
-            color: #5c6a92;
-            border-top: 1px dashed #354268;
+            border-top: 1px dashed #455785;
             padding-top: 1.3rem;
-            margin-top: 1rem;
         }
 
         /* Адаптация */
-        @media (max-width: 700px) {
-            .presentation-header h1 { font-size: 2.8rem; }
-            .program-name { font-size: 2.8rem; }
-            .developer { font-size: 2.5rem; }
+        @media (max-width: 600px) {
+            .feature-list li { font-size: 1.2rem; }
+            .feature-title { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
-<div class="presentation-container">
-    <!-- Заголовок презентации -->
-    <div class="presentation-header">
-        <h1>ПРЕЗЕНТАЦИЯ ПРОГРАММЫ</h1>
-        <div class="sub">инновационное решение 2026</div>
+<div class="app-container">
+    <!-- Заголовок -->
+    <div class="title-block">
+        <h1>ML АНАЛИЗАТОР ЛОТЕРЕЙ</h1>
+        <div class="sub">презентация возможностей 2026</div>
     </div>
 
-    <!-- Основной блок с видео (ваш video.mp4) -->
-    <div class="player-card">
-        <div class="video-box">
-            <!-- ВАШ ЛОКАЛЬНЫЙ ВИДЕОРОЛИК: video.mp4 (в той же папке) -->
-            <video id="presentationVideo" class="video-player" controls playsinline>
+    <!-- Блок видео + титры -->
+    <div class="player-panel">
+        <div class="video-wrapper">
+            <!-- ВАШ ВИДЕОФАЙЛ (video.mp4) -->
+            <video id="programVideo" controls playsinline>
                 <source src="video.mp4" type="video/mp4">
-                <!-- Если браузер не поддерживает MP4 -->
-                Ваш браузер не поддерживает видео. Пожалуйста, обновите браузер.
+                <!-- Если видео не загрузится -->
+                <div style="color:white; padding:2rem;">Видео не найдено. Поместите video.mp4 в папку.</div>
             </video>
 
-            <!-- Титры, которые появляются после окончания видео -->
-            <div id="closingCredits" class="end-credits">
-                <div class="credits-inner">
-                    <div class="program-name">"Рапидо Старт: Вариатор ставок + LSTM"</div>
-                    <div class="presentation-label">презентационный ролик</div>
-                    <div class="developer">Ефимов Игорь</div>
-                    <div class="year-badge">2026</div>
-                    <div class="thanks-message">Спасибо за внимание! Программа завершена.</div>
+            <!-- ОВЕРЛЕЙ С БЕГУЩЕЙ СТРОКОЙ (титры о возможностях) -->
+            <div id="featureOverlay" class="feature-credits">
+                <div class="scrolling-wrapper">
+                    <div class="scrolling-text">
+                        <div class="feature-title">🚀 ВОЗМОЖНОСТИ ПРОГРАММЫ</div>
+                        <ul class="feature-list">
+                            <li><span>✔️</span> Веб-приложение на HTML/CSS/JS (адаптивное, под iPhone/iPad)</li>
+                            <li><span>✔️</span> ML-модель LSTM, обученная на истории розыгрышей</li>
+                            <li><span>✔️</span> 6 методов генерации чисел (холодные, горячие, равномерный и др.)</li>
+                            <li><span>✔️</span> Уникальный "Вариатор ставок" (анализ горячих фаз)</li>
+                            <li><span>✔️</span> Тепловая карта совместных выпадений</li>
+                            <li><span>✔️</span> Графики прогнозов, статистика выигрышей</li>
+                            <li><span>✔️</span> Темная тема, кастомная клавиатура, анимации</li>
+                            <li><span>✔️</span> Сохранение данных в браузере</li>
+                        </ul>
+                        <div class="tech-badge">
+                            ⚡ Технически: полностью готовый index.html с JS и стилями ⚡
+                        </div>
+                    </div>
                 </div>
+                <div class="close-hint" id="closeCreditsBtn">✕ закрыть</div>
             </div>
         </div>
 
-        <!-- Панель управления (для удобства) -->
-        <div class="action-bar">
-            <button class="action-btn secondary" id="replayVideoBtn">↺ Смотреть заново</button>
-            <button class="action-btn highlight" id="showCreditsManualBtn">🎬 Показать титры</button>
+        <!-- Панель кнопок -->
+        <div class="button-bar">
+            <button class="btn btn-outline" id="restartVideoBtn">↺ Перезапустить видео</button>
+            <button class="btn btn-primary" id="showFeaturesBtn">📋 ПОКАЗАТЬ ВОЗМОЖНОСТИ</button>
         </div>
     </div>
 
-    <!-- ФУТЕР с информацией о разработчике и защите -->
-    <footer class="legal-footer">
-        <div class="footer-main">
-            <div class="copyright-year">
-                <span class="year">© 2026</span> 
+    <!-- ФУТЕР с копирайтом и защитой -->
+    <footer class="protected-footer">
+        <div class="footer-inner">
+            <div class="dev-info">
+                <span class="year">© 2026</span>
                 <span>Все права защищены</span>
             </div>
-            <div class="developer-name">
+            <div class="dev-name">
                 Разработчик: Ефимов Игорь
             </div>
-            <div class="copyright-text">
-                Программа является интеллектуальной собственностью автора.
+            <div class="copy-warning">
+                ⚠️ КОПИРОВАНИЕ И РАСПРОСТРАНЕНИЕ ЗАПРЕЩЕНО ⚠️
             </div>
-            <div class="protection-warning">
-                ⚡ КОПИРОВАНИЕ И РАСПРОСТРАНЕНИЕ ЗАПРЕЩЕНО ⚡
-            </div>
-            <div class="legal-note">
-                Любое использование материалов программы возможно<br>только с письменного разрешения разработчика (Ефимов Игорь, 2026).
+            <div class="legal-text">
+                Программа является интеллектуальной собственностью. Использование только с разрешения разработчика.
             </div>
         </div>
     </footer>
@@ -362,173 +383,151 @@
     (function() {
         'use strict';
 
-        // Получаем элементы
-        const video = document.getElementById('presentationVideo');
-        const credits = document.getElementById('closingCredits');
-        const replayBtn = document.getElementById('replayVideoBtn');
-        const manualBtn = document.getElementById('showCreditsManualBtn');
+        // DOM элементы
+        const video = document.getElementById('programVideo');
+        const featureOverlay = document.getElementById('featureOverlay');
+        const restartBtn = document.getElementById('restartVideoBtn');
+        const showFeaturesBtn = document.getElementById('showFeaturesBtn');
+        const closeBtn = document.getElementById('closeCreditsBtn');
 
-        // Состояние: были ли уже показаны титры
-        let creditsActive = false;
+        // Таймер для авто-закрытия
         let autoCloseTimer = null;
+        let isShowing = false;
 
-        // ========== 1. ОСНОВНАЯ ЛОГИКА: Видео закончилось = показ титров ==========
-        video.addEventListener('ended', function onVideoEnd() {
-            // Показываем титры
-            credits.classList.add('show');
-            creditsActive = true;
-
-            // Если был старый таймер — очистим
+        // ========== 1. Показ бегущей строки с функциями ==========
+        function showFeatureCredits() {
+            // Очищаем предыдущий таймер, если есть
             if (autoCloseTimer) clearTimeout(autoCloseTimer);
 
-            // *** ТИТРЫ ИДУТ 8 СЕКУНД (достаточно для прочтения), ПОТОМ ПЛЕЕР СВОРАЧИВАЕТСЯ ***
+            // Показываем оверлей
+            featureOverlay.classList.add('show');
+            isShowing = true;
+
+            // Ставим таймер на скрытие через 17 секунд (время, чтобы прочитать всё)
             autoCloseTimer = setTimeout(() => {
-                if (credits.classList.contains('show')) {
-                    // Плавно скрываем титры
-                    credits.classList.remove('show');
-                    creditsActive = false;
-
-                    // *** ВАЖНО: ПЛЕЕР "СВОРАЧИВАЕТСЯ" (закрывается) ***
-                    // Делаем плеер неактивным: сбрасываем видео в исходное состояние (как после закрытия)
-                    video.load();  // load() перезагружает видео — эффект "закрытия плеера"
-
-                    // Дополнительно можно остановить любые процессы
-                    console.log('Плеер автоматически свернут после показа титров.');
+                if (featureOverlay.classList.contains('show')) {
+                    featureOverlay.classList.remove('show');
+                    isShowing = false;
                 }
-            }, 8000); // 8 секунд демонстрации титров
-        });
+            }, 17000); // 17 секунд прокрутки
+        }
 
-        // ========== 2. Функция сброса/перезапуска видео (кнопка "Смотреть заново") ==========
-        function restartPresentation() {
-            // Убираем титры
-            credits.classList.remove('show');
-            creditsActive = false;
+        // ========== 2. Скрытие оверлея (с очисткой таймера) ==========
+        function hideFeatureCredits() {
             if (autoCloseTimer) {
                 clearTimeout(autoCloseTimer);
                 autoCloseTimer = null;
             }
-
-            // Сбрасываем видео на начало и запускаем
-            video.currentTime = 0;
-            video.play().catch(e => {
-                // Автовоспроизведение может быть заблокировано браузером — игнорируем
-                console.log('Автовоспроизведение не удалось, требуется действие пользователя');
-            });
+            featureOverlay.classList.remove('show');
+            isShowing = false;
         }
 
-        replayBtn.addEventListener('click', restartPresentation);
+        // ========== 3. Обработчик: видео закончилось → показываем возможности ==========
+        video.addEventListener('ended', function() {
+            showFeatureCredits();
 
-        // ========== 3. Ручной показ титров (кнопка) ==========
-        manualBtn.addEventListener('click', function() {
-            // Если видео ещё играет — показываем титры поверх (не останавливая)
-            credits.classList.add('show');
-            creditsActive = true;
+            // Через 17 секунд (после окончания титров) видео сворачивается (load)
+            setTimeout(() => {
+                // Если титры еще показаны (не закрыты досрочно)
+                if (featureOverlay.classList.contains('show')) {
+                    featureOverlay.classList.remove('show');
+                    isShowing = false;
 
-            // Убираем старый таймер
-            if (autoCloseTimer) clearTimeout(autoCloseTimer);
-
-            // Автоматически скрыть титры через 8 секунд (как и при естественном окончании)
-            autoCloseTimer = setTimeout(() => {
-                if (credits.classList.contains('show')) {
-                    credits.classList.remove('show');
-                    creditsActive = false;
-
-                    // Здесь НЕ делаем video.load(), так как это ручной режим, 
-                    // но можно просто скрыть.
+                    // "Сворачиваем" плеер (сбрасываем видео)
+                    video.load();
+                    console.log('Плеер автоматически свернут');
                 }
-            }, 8000);
+            }, 17000); // синхронизировано с длительностью показа
         });
 
-        // ========== 4. Дополнительный комфорт: клик по фону титров закрывает их ==========
-        credits.addEventListener('click', function(e) {
-            // Если кликнули именно на оверлей (фон), а не на внутренний текст
-            if (e.target === credits) {
-                credits.classList.remove('show');
-                creditsActive = false;
-                if (autoCloseTimer) {
-                    clearTimeout(autoCloseTimer);
-                    autoCloseTimer = null;
-                }
+        // ========== 4. Кнопка "Показать возможности" (ручной вызов) ==========
+        showFeaturesBtn.addEventListener('click', function() {
+            showFeatureCredits();
+        });
+
+        // ========== 5. Кнопка закрытия (крестик) ==========
+        closeBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // чтобы не сработал клик на оверлей
+            hideFeatureCredits();
+        });
+
+        // ========== 6. Клик по фону (закрыть) ==========
+        featureOverlay.addEventListener('click', function(e) {
+            if (e.target === featureOverlay) {
+                hideFeatureCredits();
             }
         });
 
-        // ========== 5. Если видео начали играть заново (перетащили ползунок) — скрываем титры ==========
+        // ========== 7. Кнопка перезапуска видео ==========
+        restartBtn.addEventListener('click', function() {
+            // Скрываем титры, если они открыты
+            hideFeatureCredits();
+
+            // Перезапуск видео
+            video.currentTime = 0;
+            video.play().catch(e => console.log('autoplay prevented'));
+        });
+
+        // ========== 8. Если видео начинают играть (пользователь нажал play) - скрываем титры ==========
         video.addEventListener('play', function() {
-            if (credits.classList.contains('show')) {
-                credits.classList.remove('show');
-                creditsActive = false;
-                if (autoCloseTimer) {
-                    clearTimeout(autoCloseTimer);
-                    autoCloseTimer = null;
-                }
-            }
+            hideFeatureCredits();
         });
 
-        // ========== 6. ЗАЩИТА ОТ КОПИРОВАНИЯ (футер + плеер) ==========
-        const footer = document.querySelector('.legal-footer');
-        const playerArea = document.querySelector('.player-card');
+        // ========== 9. ЗАЩИТА ОТ КОПИРОВАНИЯ (футер + контекстное меню) ==========
+        const footer = document.querySelector('.protected-footer');
+        const playerArea = document.querySelector('.player-panel');
 
-        // Запрет копирования текста в футере
+        // Защита футера
         footer.addEventListener('copy', (e) => {
             e.preventDefault();
             alert('❌ Копирование запрещено. Разработчик: Ефимов Игорь, 2026');
         });
 
-        footer.addEventListener('cut', (e) => {
-            e.preventDefault();
-            alert('❌ Вырезание запрещено.');
-        });
-
-        // Контекстное меню (правый клик) — предупреждение
         footer.addEventListener('contextmenu', (e) => {
             e.preventDefault();
-            alert('📌 Программа защищена авторским правом. Ефимов Игорь, 2026.');
+            alert('📌 Программа защищена. Копирование и распространение запрещены.');
         });
 
-        // Дополнительно защитим область плеера от копирования (чтобы нельзя было скопировать текст титров)
+        // Защита области плеера (чтобы нельзя было скопировать текст из бегущей строки)
         playerArea.addEventListener('copy', (e) => {
             e.preventDefault();
-            alert('Копирование контента запрещено разработчиком.');
+            alert('Контент защищен авторским правом.');
         });
 
-        // Предупреждение в консоли
-        console.log('%c================================', 'color: #b084cc');
-        console.log('%c⚠️ ПРОГРАММА ЗАЩИЩЕНА ⚠️', 'color: #ff9966; font-size: 16px; font-weight: bold;');
-        console.log('%cРазработчик: Ефимов Игорь | 2026', 'color: #99ccff; font-size: 13px;');
-        console.log('%cКопирование и распространение запрещены.', 'color: #ff9999;');
-        console.log('%c================================', 'color: #b084cc');
+        // Защита контекстного меню на бегущей строке
+        featureOverlay.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            alert('Текст программы защищен.');
+        });
 
-        // ========== 7. Инициализация: проверка наличия видео ==========
+        // ========== 10. Консольное предупреждение ==========
+        console.log('%c==========================================', 'color: #aa88ff');
+        console.log('%cПРОГРАММА ЗАЩИЩЕНА АВТОРСКИМ ПРАВОМ', 'color: #ffaa66; font-size: 14px; font-weight: bold;');
+        console.log('%cРазработчик: Ефимов Игорь, 2026', 'color: #88ccff; font-size: 13px;');
+        console.log('%cКопирование и распространение запрещены', 'color: #ff8888;');
+        console.log('%c==========================================', 'color: #aa88ff');
+
+        // ========== 11. Проверка наличия video.mp4 ==========
         video.addEventListener('error', function() {
-            console.warn('Видеофайл "video.mp4" не найден. Поместите видео в папку с index.html');
-            // Можно показать сообщение пользователю
-            const videoBox = document.querySelector('.video-box');
-            const errorMsg = document.createElement('div');
-            errorMsg.style.cssText = 'position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:#330000; color:#ffaaaa; padding:2rem; border-radius:2rem; border:2px solid red; z-index:100;';
-            errorMsg.textContent = '❌ video.mp4 не найден! Поместите файл в папку.';
-            videoBox.appendChild(errorMsg);
+            console.error('video.mp4 не найден! Положите файл в папку с index.html');
+            const wrapper = document.querySelector('.video-wrapper');
+            const errDiv = document.createElement('div');
+            errDiv.style.cssText = 'position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:#330000; color:#ffaaaa; padding:1.5rem; border-radius:2rem; border:2px solid red; z-index:100; text-align:center;';
+            errDiv.innerHTML = '❌ video.mp4 отсутствует!<br>Поместите видео в папку.';
+            wrapper.appendChild(errDiv);
         });
 
-        // Если видео загрузилось успешно
+        // Успешная загрузка
         video.addEventListener('loadeddata', function() {
-            console.log('✅ Видео успешно загружено: video.mp4');
+            console.log('✅ Видео video.mp4 загружено');
         });
 
-    })();
-</script>
-
-<!-- Дополнительный защитный скрипт -->
-<script>
-    (function secureWindow() {
-        // Запрет на выделение текста во всём футере (дополнительно)
+        // Дополнительно: запрет выделения на всём футере CSS (уже добавлено)
         const style = document.createElement('style');
         style.innerHTML = `
-            .legal-footer {
+            .protected-footer, .feature-credits {
                 user-select: none;
                 -webkit-user-select: none;
-            }
-            .player-card {
-                user-select: none; /* нельзя выделить текст титров */
             }
         `;
         document.head.appendChild(style);
