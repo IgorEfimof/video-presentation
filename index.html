@@ -7,7 +7,26 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="LOTUS ML">
+    <!-- Добавьте в head -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+<!-- Для скрытия статус-бара (только для iOS) -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<!-- CSS для полноэкранного режима -->
+<style>
+    /* Исправление для iOS */
+    body {
+        padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
     
+    /* Полноэкранный режим */
+    @media (display-mode: fullscreen) {
+        body {
+            background-color: #000;
+        }
+    }
+</style>
     <!-- Для Android/Chrome -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#000000">
